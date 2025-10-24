@@ -101,12 +101,7 @@ if uploaded_file is not None:
         saturation_boost = st.slider("彩度の強調", 0, 100, 40)
         
     # 4. 結果の表示と自動実行
-    col1, col2 = st.columns(2)
     
-    with col1:
-        st.subheader("オリジナル画像")
-        st.image(original_image, channels="BGR", use_column_width=True)
-
     # Streamlitはスライダーが変更されるたびにこのブロックを再実行します
     try:
         with st.spinner('画像を自動処理中... (初回や強力なぼかしは時間がかかることがあります)'): 
@@ -118,18 +113,18 @@ if uploaded_file is not None:
                 saturation_boost
             )
 
-            with col2:
-                st.subheader("ミニチュア効果 (自動適用)")
-                st.image(processed_image, channels="BGR", use_column_width=True)
+            # オリジナル画像の表示を削除し、結果のみをメインカラムに表示
+            st.subheader("ミニチュア効果 (自動適用)")
+            st.image(processed_image, channels="BGR", use_column_width=True)
                 
-                # ダウンロードボタン
-                _, encoded_img = cv2.imencode('.png', processed_image)
-                st.download_button(
-                    label="結果画像をダウンロード (PNG)",
-                    data=encoded_img.tobytes(),
-                    file_name="miniature_output.png",
-                    mime="image/png"
-                )
+            # ダウンロードボタン
+            _, encoded_img = cv2.imencode('.png', processed_image)
+            st.download_button(
+                label="結果画像をダウンロード (PNG)",
+                data=encoded_img.tobytes(),
+                file_name="miniature_output.png",
+                mime="image/png"
+            )
     except Exception as e:
         st.error(f"処理中にエラーが発生しました: {e}")
         st.info("カーネルサイズが大きすぎるか、画像サイズが小さすぎることが原因かもしれません。設定を調整してください。")
